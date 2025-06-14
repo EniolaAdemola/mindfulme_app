@@ -15,7 +15,7 @@ export default function RootLayout() {
           }}
         />
       ) : (
-        <Stack.Screen name="(auth)" /> // Your onboarding & login stack
+        <Stack.Screen name="(auth)" />
       )}
     </Stack>
   );
