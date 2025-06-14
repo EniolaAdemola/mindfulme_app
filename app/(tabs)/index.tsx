@@ -6,7 +6,7 @@ export default function Index() {
       className="flex-1 items-center justify-center"
       style={{ flex: 1, backgroundColor: "#53389E" }}
     >
-      <Text className="text-white text-5xl"> Bolu.</Text>
+      <Text className="text-white text-5xl"> Mindfulme.</Text>
       {/* <Link href="/articles/test" className="text-2xl">
         Article
       </Link> */}
