@@ -33,7 +33,7 @@ yarn-error.*
 # local env files
 .env*.local
 
-# envs
+# general envs
 .env
 .env.development
 .env.production
