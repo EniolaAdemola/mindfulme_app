@@ -17,18 +17,26 @@ const TabIcon = ({ focused, icon, title }: TabIconProps) => {
   const textColor = focused ? "text-[#53389E]" : "text-gray-400";
   const textWeight = focused ? "font-bold" : "font-normal";
 
-  // Normal tab
   return (
     <View className="justify-center items-center w-20 flex-1 mt-2">
-      <Image
-        source={icon}
+      <View
         style={{
-          width: 20,
-          height: 30,
-          tintColor: focused ? ACTIVE : INACTIVE,
+          backgroundColor: focused ? ACTIVE : "transparent",
+          borderRadius: 25, // fully rounded
+          padding: 5,
+          marginTop: 8,
         }}
-        resizeMode="contain"
-      />
+      >
+        <Image
+          source={icon}
+          style={{
+            width: 20,
+            height: 20,
+            tintColor: focused ? "#fff" : INACTIVE,
+          }}
+          resizeMode="contain"
+        />
+      </View>
       <Text className={`text-xs ${textColor} ${textWeight}`}>{title}</Text>
     </View>
   );
