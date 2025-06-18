@@ -4,7 +4,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const ProfileCard = () => {
   return (
-    <View className="w-full flex-row justify-between items-start pt-12">
+    <View className="w-full flex-row justify-between items-start ">
       {/* Text Section */}
       <View>
         <Text className="text-white text-2xl font-bold">
