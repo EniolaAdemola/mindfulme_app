@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/clerk-expo";
 import { Stack } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -17,10 +18,28 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
-      {!isLoggedIn && !isFirstLaunch && <Stack.Screen name="login" />}
-      {!isLoggedIn && isFirstLaunch && <Stack.Screen name="onboarding" />}
-      {/* {isLoggedIn && <Stack.Screen name="(tabs)" />} */}
-    </Stack>
+    <ClerkProvider>
+      {/* <SafeAreaProvider>
+        <SafeAreaView className="flex-1"> */}
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+      {/* <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="sign-in"
+            options={{
+              headerShown: false,
+            }}
+          /> */}
+      {/* </SafeAreaView>
+      </SafeAreaProvider> */}
+    </ClerkProvider>
   );
 }

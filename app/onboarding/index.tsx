@@ -1,64 +1,194 @@
-import { useRouter } from "expo-router";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import { images } from "@/constants/images";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  Dimensions,
+  Image,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+const onboardingData = [
+  {
+    id: 1,
+    image: images.Image6,
+    title: "Welcome to MindfulME",
+    description: "Your Personal Mental Wellness Companion",
+  },
+  {
+    id: 2,
+    image: images.Image3,
+    title: "Mental Health Tracking",
+    description: "Monitor your mood patterns and mental wellbeing",
+  },
+  {
+    id: 3,
+    image: images.Image5,
+    title: "Guided Meditation",
+    description: "Reduce stress with mindfulness exercises",
+  },
+  {
+    id: 4,
+    image: images.Image1,
+    title: "AI Mental Health Assistant",
+    description: "Get personalized support and resources",
+  },
+];
+
+const { width, height } = Dimensions.get("window");
 
 export default function Onboarding() {
-  const router = useRouter();
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const features = [
-    {
-      title: "Mental Health Tracking",
-      description: "Monitor your mood and mental wellbeing",
-      icon: "📊",
-    },
-    {
-      title: "Guided Meditation",
-      description: "Reduces stress with mindfulness exercises",
-      icon: "🧘‍♂️",
-    },
-    {
-      title: "AI Mental Health Assistant",
-      description: "Get personalized support and resources",
-      icon: "🤖",
-    },
-  ];
-
-  const completeOnboarding = async () => {
-    // await AsyncStorage.setItem("hasSeenOnboarding", "true");
-    // router.push("/(auth)/login");
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const slide = Math.round(event.nativeEvent.contentOffset.x / width);
+    setActiveIndex(slide);
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
-      <View className="items-center px-6 py-12">
-        <Text className="text-3xl font-bold text-purple-600 mb-2">
-          Welcome to MindfulMe
-        </Text>
-        <Text className="text-lg text-gray-600 mb-10">
-          Your Personal Mental Wellness Companion
-        </Text>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        style={{ flex: 1 }}
+      >
+        {onboardingData.map((item) => (
+          <View key={item.id} style={{ width, height, position: "relative" }}>
+            {/* Background image with cover effect */}
+            <Image
+              source={item.image}
+              style={[
+                StyleSheet.absoluteFillObject,
+                { width: "100%", height: "100%" },
+              ]}
+              resizeMode="cover"
+            />
 
-        {features.map((feature, index) => (
-          <View key={index} className="bg-purple-50 rounded-xl p-6 mb-6 w-full">
-            <Text className="text-4xl mb-3">{feature.icon}</Text>
-            <Text className="text-xl font-bold text-gray-900 mb-1">
-              {feature.title}
-            </Text>
-            <Text className="text-gray-600">{feature.description}</Text>
+            {/* Shadow overlay */}
+            <View
+              style={[
+                StyleSheet.absoluteFillObject,
+                { backgroundColor: "rgba(0,0,0,0.4)" },
+              ]}
+            />
+
+            {/* Content */}
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 250, // Adjusted for better visibility
+                paddingHorizontal: 32,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  marginBottom: 12,
+                }}
+              >
+                {item.title}
+              </Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  textAlign: "center",
+                  marginBottom: 24,
+                }}
+              >
+                {item.description}
+              </Text>
+            </View>
           </View>
         ))}
+      </ScrollView>
 
-        <View className="flex-row space-x-4 mt-6">
-          <TouchableOpacity
-            className="bg-purple-600 px-8 py-3 rounded-full flex-1"
-            onPress={completeOnboarding}
-          >
-            <Text className="text-white text-center font-medium">
-              Get Started
-            </Text>
-          </TouchableOpacity>
-        </View>
+      {/* ======== PAGINATION SECTION ======== */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          position: "absolute",
+          bottom: 260, // Positioned above the buttons
+          width: "100%",
+        }}
+      >
+        {onboardingData.map((_, index) => (
+          <View
+            key={index}
+            style={{
+              width: index === activeIndex ? 12 : 7, // Active indicator is wider
+              height: 7,
+              borderRadius: 5,
+              marginHorizontal: 4,
+              backgroundColor:
+                index === activeIndex ? "#53389E" : "rgba(255,255,255,0.4)",
+            }}
+          />
+        ))}
       </View>
-    </ScrollView>
+      {/* ======== END PAGINATION SECTION ======== */}
+
+      {/* Action buttons - positioned on top of images */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 60,
+          width: "100%",
+          paddingHorizontal: 24,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#53389E",
+            paddingVertical: 16,
+            borderRadius: 10,
+            marginBottom: 12,
+          }}
+          onPress={() => router.replace("/sign-in")}
+        >
+          <Text
+            style={{
+              color: "#fff",
+              textAlign: "center",
+              fontSize: 18,
+              fontWeight: "600",
+            }}
+          >
+            Login
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+          }}
+          onPress={() => router.replace("/sign-up")}
+        >
+          <Text
+            style={{
+              color: "#ffff",
+              textAlign: "center",
+              fontSize: 18,
+              fontWeight: "600",
+            }}
+          >
+            Create an Account
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }

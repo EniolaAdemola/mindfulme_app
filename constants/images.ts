@@ -1,3 +1,4 @@
+import backgroundBlur from "@/assets/images/BackgroundBlur.png";
 import bg from "@/assets/images/bg.png";
 import highlight from "@/assets/images/highlight.png";
 import Image1 from "@/assets/images/image1.jpg";
@@ -7,6 +8,7 @@ import Image4 from "@/assets/images/image4.jpg";
 import Image5 from "@/assets/images/image5.jpg";
 import Image6 from "@/assets/images/image6.png";
 import Image7 from "@/assets/images/image7.jpg";
+import logo from "@/assets/images/logo_rounded.png";
 import rankingGradient from "@/assets/images/rankingGradient.png";
 
 export const images = {
@@ -20,4 +22,6 @@ export const images = {
   Image5,
   Image6,
   Image7,
+  backgroundBlur,
+  logo,
 };
