@@ -42,19 +42,21 @@ const TabIcon = ({ focused, icon, title }: TabIconProps) => {
   );
 };
 
-export default function _layout() {
+export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#fff",
-          height: 80,
+          backgroundColor: "#ffff",
+          height: 60,
           borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
           position: "absolute",
+          borderTopRightRadius: 20,
+          paddingBottom: 5,
           borderTopWidth: 0,
+          bottom: 0,
           elevation: 5,
           paddingHorizontal: 8,
         },
