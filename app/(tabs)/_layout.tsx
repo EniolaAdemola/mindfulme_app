@@ -30,8 +30,8 @@ const TabIcon = ({ focused, icon, title }: TabIconProps) => {
         <Image
           source={icon}
           style={{
-            width: 20,
-            height: 20,
+            width: 23,
+            height: 23,
             tintColor: focused ? "#fff" : INACTIVE,
           }}
           resizeMode="contain"
@@ -50,7 +50,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: "#ffff",
-          height: 60,
+          height: 80,
           borderTopLeftRadius: 20,
           position: "absolute",
           borderTopRightRadius: 20,
