@@ -1,3 +1,4 @@
+import { submitMood } from "@/app/lib/api";
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -18,17 +19,39 @@ const moods = [
 ];
 
 const MoodCheck = () => {
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [selectedMood, setSelectedMood] = useState<string>("");
   const [note, setNote] = useState("");
   const [showNoteInput, setShowNoteInput] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmit = () => {
-    console.log("Mood selected:", selectedMood);
-    console.log("Note:", note);
-    // Reset after submission
-    setSelectedMood(null);
-    setNote("");
-    setShowNoteInput(false);
+  // write a code to set error and success to false after 5 seconds if not null
+  React.useEffect(() => {
+    if (error || success) {
+      const timer = setTimeout(() => {
+        setError(null);
+        setSuccess(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, success]);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    const result = await submitMood(selectedMood, note);
+    setLoading(false);
+
+    if (result.error) {
+      setError(result.error.message || "An error occurred");
+    } else {
+      setSuccess("Mood submitted successfully!");
+      setSelectedMood("");
+      setNote("");
+      setShowNoteInput(false);
+    }
   };
 
   return (
@@ -55,7 +78,7 @@ const MoodCheck = () => {
                 onPress={() => setSelectedMood(mood.name)}
               >
                 <Text className="text-3xl">{mood.emoji}</Text>
-                <Text className="text-xs mt-1">{mood.name}</Text>
+                <Text className="text-[0.6rem] mt-1">{mood.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -84,12 +107,24 @@ const MoodCheck = () => {
           <TouchableOpacity
             className={`py-3 rounded-lg items-center ${
               selectedMood ? "bg-primary" : "bg-gray-300"
-            }`}
+            } ${!selectedMood ? "opacity-50" : ""}`}
             disabled={!selectedMood}
             onPress={handleSubmit}
           >
-            <Text className={`text-white font-medium`}>Save Mood</Text>
+            <Text
+              className={`font-medium ${
+                selectedMood ? "text-white" : "text-gray-400"
+              }`}
+            >
+              {loading ? "Submitting..." : "Submit Mood"}
+            </Text>
           </TouchableOpacity>
+          {success && (
+            <Text className="text-green-600 text-center mt-2">{success}</Text>
+          )}
+          {error && (
+            <Text className="text-red-600 text-center mt-2">{error}</Text>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

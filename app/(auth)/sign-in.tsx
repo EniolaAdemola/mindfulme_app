@@ -1,9 +1,9 @@
 import { images } from "@/constants/images";
-import { useSignIn } from "@clerk/clerk-expo";
 import Checkbox from 'expo-checkbox';
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+    Alert,
     Image,
     KeyboardAvoidingView,
     Platform,
@@ -14,40 +14,33 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
+import { supabase } from "../lib/superbase";
 
 export default function SignIn() {
-  const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
-
-  const [emailAddress, setEmailAddress] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const onSignInPress = async () => {
-    if (!isLoaded) return;
-    setIsLoading(true);
-
+  async function signInWithEmail() {
+    setLoading(true);
     try {
-      const signInAttempt = await signIn.create({
-        identifier: emailAddress,
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
         password,
       });
-
-      if (signInAttempt.status === "complete") {
-        await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/");
+      if (error) {
+        Alert.alert(error.message);
       } else {
-        console.error(JSON.stringify(signInAttempt, null, 2));
+        // Navigate to your desired screen after successful login
+        router.replace("/(tabs)"); // or router.replace("/(tabs)") or your home screen
       }
-    } catch (err) {
-       const errorMessage = err instanceof Error ? err.message : "An error occurred";
-      console.error(JSON.stringify(err, null, 2));
-      alert(`${errorMessage ? errorMessage : "login failed. Please check your credentials."}`);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  };
+  }
+
 
   return (
     <KeyboardAvoidingView
@@ -88,21 +81,19 @@ export default function SignIn() {
           
           {/* Email Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email Address</Text>
             <TextInput
               autoCapitalize="none"
               keyboardType="email-address"
               style={styles.input}
               placeholder="Enter your email"
               placeholderTextColor="rgba(12, 17, 29, 0.4)"
-              value={emailAddress}
-              onChangeText={setEmailAddress}
+              value={email}
+              onChangeText={setEmail}
             />
           </View>
           
           {/* Password Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Password</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter your password"
@@ -131,13 +122,16 @@ export default function SignIn() {
           </View>
           
           {/* Login Button */}
-          <TouchableOpacity 
-            style={styles.loginButton}
-            onPress={onSignInPress}
-            disabled={isLoading}
-          >
+          <TouchableOpacity
+  style={[
+    styles.loginButton,
+    (!email || !password) ? styles.loginButtonDisabled : styles.loginButtonActive,
+  ]}
+  disabled={!email || !password}
+  onPress={signInWithEmail}
+>
             <Text style={styles.buttonText}>
-              {isLoading ? "Processing..." : "Login"}
+              {loading ? "Processing..." : "Login"}
             </Text>
           </TouchableOpacity>
           
@@ -271,6 +265,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+  },
+  loginButtonActive: {
+    backgroundColor: "rgba(83, 56, 158, 1)", // Active purple
+  },
+  loginButtonDisabled: {
+    backgroundColor: "rgba(83, 56, 158, 0.3)", // Light purple
   },
   signupText: {
     fontSize: 14,
