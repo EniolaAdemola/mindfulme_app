@@ -62,7 +62,6 @@ export default function Onboarding() {
       >
         {onboardingData.map((item) => (
           <View key={item.id} style={{ width, height, position: "relative" }}>
-            {/* Background image with cover effect */}
             <Image
               source={item.image}
               style={[
@@ -71,8 +70,6 @@ export default function Onboarding() {
               ]}
               resizeMode="cover"
             />
-
-            {/* Shadow overlay */}
             <View
               style={[
                 StyleSheet.absoluteFillObject,
@@ -86,7 +83,7 @@ export default function Onboarding() {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 250, // Adjusted for better visibility
+                marginTop: 250,
                 paddingHorizontal: 32,
               }}
             >
