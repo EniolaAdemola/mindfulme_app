@@ -1,9 +1,26 @@
+import { getMoodCheckCount } from "@/app/lib/api";
+import { supabase } from "@/app/lib/superbase";
+import { icons } from "@/constants/icons";
 import { useRouter } from "expo-router";
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const TodaysProgress = () => {
   const router = useRouter();
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function fetchCount() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const result = await getMoodCheckCount(user.id);
+        if (!result.error) setCount(result.count);
+      }
+    }
+    fetchCount();
+  }, []);
 
   return (
     <View className="px-5 mt-6">
@@ -13,21 +30,25 @@ const TodaysProgress = () => {
       </Text>
 
       {/* Stats Grid */}
-      <View className="flex-row justify-between bg-white rounded-xl p-5">
+      <View className="flex-row justify-between bg-white rounded-xl px-5 py-10">
         {/* Mood Checks */}
-        <View className="items-center">
-          <Text className="text-2xl font-bold text-purple-600">1</Text>
+        <View className="items-center border border-gray-100 rounded-xl px-10 py-6">
+          <View className="w-16 h-16 border border-gray-100 rounded-full items-center justify-center mb-2">
+            <Text className="text-3xl">😁</Text>
+          </View>
+          <Text className="text-2xl font-bold text-purple-600">{count}</Text>
           <Text className="text-xs text-gray-500 mt-1">Mood Checks</Text>
         </View>
 
-        {/* Ratio (assuming this is your 1:3) */}
-        <View className="items-center">
-          <Text className="text-2xl font-bold text-blue-600">1:3</Text>
-          <Text className="text-xs text-gray-500 mt-1">Completed</Text>
-        </View>
-
         {/* Journal Entries */}
-        <View className="items-center">
+        <View className="items-center border border-gray-100 rounded-xl px-10 py-6">
+          <View className="w-16 h-16 border border-gray-100 rounded-full items-center justify-center mb-2">
+            <Image
+              source={icons.Journal}
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          </View>
           <Text className="text-2xl font-bold text-green-600">0</Text>
           <Text className="text-xs text-gray-500 mt-1">Journal Entries</Text>
         </View>
