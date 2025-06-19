@@ -1,9 +1,9 @@
 import { images } from "@/constants/images";
-import { useSignUp } from "@clerk/clerk-expo";
 import Checkbox from 'expo-checkbox';
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -14,136 +14,45 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { supabase } from "../lib/superbase";
 
 export default function SignUpScreen() {
-  const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [emailAddress, setEmailAddress] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [pendingVerification, setPendingVerification] = useState(false);
-  const [code, setCode] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // Handle submission of sign-up form
-  const onSignUpPress = async () => {
-    if (!isLoaded) return;
-    setIsLoading(true);
+  const isSignUpDisabled =
+  !fullName ||
+  !email ||
+  !password ||
+  !confirmPassword ||
+  password !== confirmPassword;
 
-    // Simple validation
-    if (password !== confirmPassword) {
-      alert("Passwords don't match");
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      await signUp.create({
-        // firstName,
-        // lastName,
-        emailAddress,
-        password,
-      });
-
-      // Send verification email
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-      setPendingVerification(true);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred";
-      console.error(JSON.stringify(err, null, 2));
-      alert(`${errorMessage ? errorMessage : "Sign up failed. Please check your information and try again."}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle verification
-  const onVerifyPress = async () => {
-    if (!isLoaded) return;
-    setIsLoading(true);
-
-    try {
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({ code });
-      console.log("SignUp Attempt:", JSON.stringify(signUpAttempt, null, 2));
-      
-      if (signUpAttempt.status === "complete") {
-        await setActive({ session: signUpAttempt.createdSessionId });
-        router.replace("/sign-in");
-      } else {
-        console.error(JSON.stringify(signUpAttempt, null, 2));
+    async function signUpWithEmail() {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              display_name: fullName, // or any custom field
+            },
+          },
+        });
+        if (error) {
+          Alert.alert(error.message);
+        } else if (!data.session) {
+          Alert.alert("Please check your inbox for email verification!");
+        }
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error(JSON.stringify(err, null, 2));
-      alert("Verification failed. Please check the code and try again.");
-    } finally {
-      setIsLoading(false);
     }
-  };
-
-  if (pendingVerification) {
-    return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        <Image 
-          source={images.backgroundBlur} 
-          style={styles.background} 
-          resizeMode="cover"
-        />
-        
-        <View style={[styles.content, { maxWidth: 400 }]}>
-          <Image 
-            source={images.logo} 
-            style={styles.logo} 
-            resizeMode="contain"
-          />
-          
-          
-          <Text style={styles.title}>Verify Your Email</Text>
-          <Text style={styles.subtitle}>
-            We've sent a verification code to {emailAddress}
-          </Text>
-          
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Verification Code</Text>
-            <TextInput
-              autoCapitalize="none"
-              style={styles.input}
-              placeholder="Enter your code"
-              placeholderTextColor="#A8B5DB"
-              value={code}
-              onChangeText={setCode}
-            />
-          </View>
-          
-          <TouchableOpacity 
-            style={styles.signUpButton}
-            onPress={onVerifyPress}
-            disabled={isLoading}
-          >
-            <Text style={styles.buttonText}>
-              {isLoading ? "Verifying..." : "Verify Email"}
-            </Text>
-          </TouchableOpacity>
-          
-          <Link href="/sign-in" asChild>
-              <TouchableOpacity>
-                <Text style={styles.signinLink}> Login</Text>
-              </TouchableOpacity>
-            </Link>
-
-          <TouchableOpacity onPress={() => setPendingVerification(false)}>
-            <Text style={styles.resendCode}>Didn't receive a code? Resend</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    );
-  }
 
   return (
     <KeyboardAvoidingView
@@ -151,73 +60,69 @@ export default function SignUpScreen() {
       style={styles.container}
     >
       <Image 
-        source={images.backgroundBlur} 
-        style={styles.background} 
-        resizeMode="cover"
-      />
+         source={images.backgroundBlur} 
+         style={styles.background} 
+         resizeMode="cover"
+       />
+       <Image 
+         source={images.backgroundBlur} 
+         style={styles.background2} 
+         resizeMode="cover"
+       />
       
       <ScrollView 
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.content}>
-          <Image 
-            source={images.logo} 
-            style={styles.logo} 
-            resizeMode="contain"
-          />
+        <View style={styles.content} >
+           <View style={{ alignItems: "center" }}>
           
+           <Link href="/">
+              <Image 
+                source={images.logo} 
+                style={styles.logo} 
+                resizeMode="contain"
+              />
+            </Link>
+            </View>
+           <Text className="font-bold text-center text-2xl mt-3 mb-10">MindFulMe</Text>
+            
           <Text style={styles.title}>Create an Account</Text>
           <Text style={styles.subtitle}>Please provide your details</Text>
           
           {/* Name Fields */}
           <View style={styles.nameContainer}>
             <View style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}>
-              <Text style={styles.inputLabel}>First Name</Text>
               <TextInput
                 autoCapitalize="words"
                 style={styles.input}
-                placeholder="First name"
-                placeholderTextColor="#A8B5DB"
-                value={firstName}
-                onChangeText={setFirstName}
-              />
-            </View>
-            
-            <View style={[styles.inputContainer, { flex: 1, marginLeft: 8 }]}>
-              <Text style={styles.inputLabel}>Last Name</Text>
-              <TextInput
-                autoCapitalize="words"
-                style={styles.input}
-                placeholder="Last name"
-                placeholderTextColor="#A8B5DB"
-                value={lastName}
-                onChangeText={setLastName}
+                placeholder="Full Nnme"
+                placeholderTextColor="rgba(12, 17, 29, 0.4)"
+                value={fullName}
+                onChangeText={setFullName}
               />
             </View>
           </View>
           
           {/* Email Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email Address</Text>
             <TextInput
               autoCapitalize="none"
               keyboardType="email-address"
               style={styles.input}
               placeholder="Enter your email"
-              placeholderTextColor="#A8B5DB"
-              value={emailAddress}
-              onChangeText={setEmailAddress}
+              placeholderTextColor="rgba(12, 17, 29, 0.4)"
+              value={email}
+              onChangeText={setEmail}
             />
           </View>
           
           {/* Password Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Password</Text>
             <TextInput
               style={styles.input}
               placeholder="Create a password"
-              placeholderTextColor="#A8B5DB"
+              placeholderTextColor="rgba(12, 17, 29, 0.4)"
               secureTextEntry={true}
               value={password}
               onChangeText={setPassword}
@@ -226,11 +131,10 @@ export default function SignUpScreen() {
           
           {/* Confirm Password Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Confirm Password</Text>
             <TextInput
               style={styles.input}
               placeholder="Confirm your password"
-              placeholderTextColor="#A8B5DB"
+              placeholderTextColor="rgba(12, 17, 29, 0.4)"
               secureTextEntry={true}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
@@ -252,12 +156,15 @@ export default function SignUpScreen() {
           
           {/* Sign Up Button */}
           <TouchableOpacity 
-            style={[styles.signUpButton, !termsAccepted && styles.disabledButton]}
-            onPress={onSignUpPress}
-            disabled={isLoading || !termsAccepted}
+            onPress={signUpWithEmail}
+            style={[
+              styles.signUpButton,
+              isSignUpDisabled ? styles.buttonDisabled : styles.buttonActive,
+            ]}
+            disabled={loading || isSignUpDisabled}
           >
             <Text style={styles.buttonText}>
-              {isLoading ? "Creating Account..." : "Sign up"}
+              {loading ? "Creating Account..." : "Sign up"}
             </Text>
           </TouchableOpacity>
           
@@ -280,53 +187,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    marginTop: 20
   },
   background: {
     ...StyleSheet.absoluteFillObject,
     width: "100%",
-    height: "100%",
+    height: "80%",
+    marginTop: 400, 
+  },
+  background2: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "80%",
+    marginTop: 600, 
+    transform: [{ rotate: "90deg" }],
+    marginLeft: -200,
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "center",
+    marginTop: 80,
   },
   content: {
-    padding: 24,
+    padding: 5,
     marginHorizontal: 16,
     borderRadius: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 5,
   },
   logo: {
-    width: 120,
-    height: 40,
+    width: 180,
+    height: 60,
     alignSelf: "center",
     marginBottom: 24,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    textAlign: "center",
+    textAlign: "left",
     color: "#151312",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    textAlign: "center",
+    textAlign: "left",
     color: "#667085",
     marginBottom: 32,
   },
   nameContainer: {
     flexDirection: "row",
-    marginBottom: 20,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 8,
   },
   inputLabel: {
     fontSize: 14,
@@ -339,13 +251,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#D0D5DD",
     borderRadius: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     fontSize: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(231, 232, 234, 0.25)",
   },
   termsContainer: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     marginBottom: 24,
   },
   checkbox: {
@@ -373,6 +285,12 @@ const styles = StyleSheet.create({
   disabledButton: {
     backgroundColor: "#E4E7EC",
   },
+  buttonActive: {
+    backgroundColor: "rgba(83, 56, 158, 1)", // Active purple
+  },
+  buttonDisabled: {
+    backgroundColor: "rgba(83, 56, 158, 0.3)", // Light purple
+  },
   buttonText: {
     color: "#fff",
     fontSize: 16,
@@ -391,6 +309,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     color: "#53389E",
+    zIndex: 1,
   },
   resendCode: {
     fontSize: 14,
