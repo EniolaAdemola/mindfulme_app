@@ -1,17 +1,70 @@
+import { supabase } from "@/app/lib/superbase";
 import { icons } from "@/constants/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
 const ProfileCard = () => {
+  const [displayName, setDisplayName] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        // If you stored the name in user_metadata.display_name
+        setDisplayName(user.user_metadata?.display_name || "");
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const motivationalQuotes = {
+    quotes: [
+      "Today is a new opportunity.",
+      "A stress-free life is a healthy life.",
+      "Believe in yourself.",
+      "Embrace the spectrum of your moods.",
+      "Every feeling is a reminder of who you are.",
+      "Your mood is your guide—trust it.",
+      "Let your emotions inspire creativity.",
+      "Balance your mind and soul.",
+      "Stay strong.",
+      "Make it happen.",
+    ],
+  };
+
+  const getDailyMotivationalQuote = () => {
+    const dayIndex = Math.floor(Date.now() / 86400000);
+    const index = dayIndex % motivationalQuotes.quotes.length;
+    return motivationalQuotes.quotes[index];
+  };
+
   return (
-    <View className="w-full flex-row justify-between items-start ">
+    <View
+      className="w-full flex-row justify-between items-start 
+    "
+    >
       {/* Text Section */}
       <View>
-        <Text className="text-white text-2xl font-bold">
-          Good Morning Adekunle
+        <Text className="text-white text-xl font-bold">
+          {getGreeting()}
+          {displayName
+            ? ` ${
+                displayName.split(" ")[0].charAt(0).toUpperCase() +
+                displayName.split(" ")[0].slice(1).toLowerCase()
+              }`
+            : ""}
         </Text>
-        <Text className="text-white text-xl opacity-80">
-          Today is a new opportunity
+        <Text className="text-white text-sm opacity-80">
+          {getDailyMotivationalQuote()}
         </Text>
       </View>
 
