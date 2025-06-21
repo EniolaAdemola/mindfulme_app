@@ -1,3 +1,4 @@
+import { UserProvider } from "@/context/UserContext";
 import { router, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import "./globals.css";
@@ -20,11 +21,13 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <UserProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </UserProvider>
     // {/* <SafeAreaProvider>
     //   <SafeAreaView className="flex-1"> */}
     // {/* <Stack.Screen

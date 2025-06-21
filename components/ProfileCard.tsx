@@ -1,6 +1,6 @@
-import { supabase } from "@/app/lib/superbase";
 import { icons } from "@/constants/icons";
-import React, { useEffect, useState } from "react";
+import { useUser } from "@/context/UserContext";
+import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 function getGreeting() {
@@ -11,20 +11,8 @@ function getGreeting() {
 }
 
 const ProfileCard = () => {
-  const [displayName, setDisplayName] = useState("");
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        // If you stored the name in user_metadata.display_name
-        setDisplayName(user.user_metadata?.display_name || "");
-      }
-    };
-    fetchUser();
-  }, []);
+  const { user } = useUser();
+  const displayName = user?.user_metadata?.display_name;
 
   const motivationalQuotes = {
     quotes: [

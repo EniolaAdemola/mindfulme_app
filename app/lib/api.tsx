@@ -40,3 +40,52 @@ export async function getMoodCheckCount(userId: string) {
   }
   return { count };
 }
+
+export async function getMoodCheckCountToday(userId: string) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Start of today
+
+  const { count, error } = await supabase
+    .from("MoodCheckTable")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("created_at", today.toISOString());
+
+  if (error) {
+    return { error };
+  }
+  return { count };
+}
+
+export async function getUserMoodsForWeek(userId: string) {
+  // Get the date 7 days ago in ISO format
+  const today = new Date();
+  const weekAgo = new Date(today);
+  weekAgo.setDate(today.getDate() - 6); // includes today, so 7 days total
+  weekAgo.setHours(0, 0, 0, 0);
+
+  const { data, error } = await supabase
+    .from("MoodCheckTable")
+    .select("*")
+    .eq("user_id", userId)
+    .gte("created_at", weekAgo.toISOString())
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    return { error };
+  }
+  return { data };
+}
+
+export async function getAllUserMoods(userId: string) {
+  const { data, error } = await supabase
+    .from("MoodCheckTable")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    return { error };
+  }
+  return { data };
+}
