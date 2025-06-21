@@ -1,4 +1,4 @@
-import { getMoodCheckCount } from "@/app/lib/api";
+import { getMoodCheckCountToday } from "@/app/lib/api";
 import { supabase } from "@/app/lib/superbase";
 import { icons } from "@/constants/icons";
 import { useRouter } from "expo-router";
@@ -15,7 +15,7 @@ const TodaysProgress = () => {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        const result = await getMoodCheckCount(user.id);
+        const result = await getMoodCheckCountToday(user.id);
         if (!result.error) setCount(result.count);
       }
     }
