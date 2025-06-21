@@ -1,4 +1,5 @@
 import { icons } from "@/constants/icons";
+import { UserProvider } from "@/context/UserContext";
 import { Tabs } from "expo-router";
 import React from "react";
 import { Image, Text, View } from "react-native";
@@ -44,72 +45,82 @@ const TabIcon = ({ focused, icon, title }: TabIconProps) => {
 
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarShowLabel: false,
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: "#ffff",
-          height: 80,
-          borderTopLeftRadius: 20,
-          position: "absolute",
-          borderTopRightRadius: 20,
-          paddingBottom: 5,
-          borderTopWidth: 0,
-          bottom: 0,
-          elevation: 5,
-          paddingHorizontal: 8,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon={icons.home} title="Home" />
-          ),
+    <UserProvider>
+      <Tabs
+        screenOptions={{
+          tabBarShowLabel: false,
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: "#ffff",
+            height: 80,
+            borderTopLeftRadius: 20,
+            position: "absolute",
+            borderTopRightRadius: 20,
+            paddingBottom: 5,
+            borderTopWidth: 0,
+            bottom: 0,
+            elevation: 5,
+            paddingHorizontal: 8,
+          },
         }}
-      />
-      <Tabs.Screen
-        name="analytics"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              icon={icons.Analytics}
-              title="Analytics"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="aiAssistant"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              icon={icons.AiChart}
-              title="AI Assistant"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="journal"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon={icons.Journal} title="Journal" />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon={icons.person} title="Profile" />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon focused={focused} icon={icons.home} title="Home" />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="analytics"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                focused={focused}
+                icon={icons.Analytics}
+                title="Analytics"
+              />
+            ),
+            headerShown: true,
+            headerTitle: "Analytics",
+          }}
+        />
+        <Tabs.Screen
+          name="aiAssistant"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                focused={focused}
+                icon={icons.AiChart}
+                title="AI Assistant"
+              />
+            ),
+            headerShown: true,
+            headerTitle: "AI Mental Assistant",
+          }}
+        />
+        <Tabs.Screen
+          name="journal"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon focused={focused} icon={icons.Journal} title="Journal" />
+            ),
+            headerShown: true,
+            headerTitle: "Journal",
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon focused={focused} icon={icons.person} title="Profile" />
+            ),
+            headerShown: true,
+            headerTitle: "Profile",
+          }}
+        />
+      </Tabs>
+    </UserProvider>
   );
 }
