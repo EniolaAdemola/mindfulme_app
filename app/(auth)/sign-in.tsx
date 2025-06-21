@@ -1,22 +1,24 @@
 import { images } from "@/constants/images";
+import { useUser } from "@/context/UserContext";
 import Checkbox from 'expo-checkbox';
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    Alert,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { supabase } from "../lib/superbase";
 
 export default function SignIn() {
+  const { setUser } = useUser();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +35,8 @@ export default function SignIn() {
       if (error) {
         Alert.alert(error.message);
       } else {
-        // Navigate to your desired screen after successful login
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
         router.replace("/(tabs)"); // or router.replace("/(tabs)") or your home screen
       }
     } finally {
@@ -73,7 +76,7 @@ export default function SignIn() {
               />
             </Link>
           </View>
-         <Text className="font-bold text-center text-2xl mt-3 mb-10">MindFulMe</Text>
+         <Text className="font-bold text-center text-2xl mt-3 mb-10">MindFulMe </Text>
 
           
           <Text style={styles.title}>Login to Account</Text>
