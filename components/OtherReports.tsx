@@ -42,7 +42,7 @@ const OtherReports = () => {
   ];
 
   const renderItem = ({ item }: any) => (
-    <TouchableOpacity style={styles.row}>
+    <TouchableOpacity style={styles.row} key={item.id}>
       <View style={styles.left}>
         <Ionicons
           name={item.icon}
@@ -57,7 +57,9 @@ const OtherReports = () => {
         <View style={styles.valueBox}>
           <Text style={styles.value}>{item.value}</Text>
         </View>
-        <Ionicons name="chevron-forward" size={18} color="#6B7280" />
+        {item.id !== 1 && (
+          <Ionicons name="chevron-forward" size={18} color="#6B7280" />
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -74,8 +76,9 @@ const OtherReports = () => {
         showing data for the total numbers of entries, streaks,and articles
         available
       </Text>
+
       <View style={{ padding: 16 }}>
-        {stats.map((item) => renderItem({ item, key: item.id }))}
+        {stats.map((item) => renderItem({ item }))}
       </View>
     </View>
   );
