@@ -25,7 +25,7 @@ const analytics = () => {
 
       <View className="px-4 py-3">
         <Text className="font-semibold text-xl">Mood Overview</Text>
-        <Text className="text-gray-500 text-xl">
+        <Text className="text-sm text-gray-600">
           Average mood per day/week, mood trends, most frequent mood
         </Text>
       </View>
