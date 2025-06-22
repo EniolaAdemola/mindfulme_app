@@ -106,14 +106,14 @@ const MoodCheck = () => {
           {/* Submit Button */}
           <TouchableOpacity
             className={`py-3 rounded-lg items-center ${
-              selectedMood ? "bg-primary" : "bg-gray-300"
+              selectedMood ? "bg-[#53389E]" : "bg-[#7e60d2]"
             } ${!selectedMood ? "opacity-50" : ""}`}
             disabled={!selectedMood}
             onPress={handleSubmit}
           >
             <Text
               className={`font-medium ${
-                selectedMood ? "text-white" : "text-gray-400"
+                selectedMood ? "text-white" : "text-black"
               }`}
             >
               {loading ? "Submitting..." : "Submit Mood"}
