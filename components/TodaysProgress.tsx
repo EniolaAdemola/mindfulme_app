@@ -1,4 +1,4 @@
-import { getMoodCheckCountToday } from "@/app/lib/api";
+import { getMoodCheckCountToday, getUserJournalCount } from "@/app/lib/api";
 import { supabase } from "@/app/lib/superbase";
 import { icons } from "@/constants/icons";
 import { useRouter } from "expo-router";
@@ -8,6 +8,23 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 const TodaysProgress = () => {
   const router = useRouter();
   const [count, setCount] = useState<number | null>(null);
+  const [journalCount, setJournalCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function fetchCounts() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const moodResult = await getMoodCheckCountToday(user.id);
+        if (!moodResult.error) setCount(moodResult.count);
+
+        const journalResult = await getUserJournalCount(user.id);
+        if (!journalResult.error) setJournalCount(journalResult.count);
+      }
+    }
+    fetchCounts();
+  }, []);
 
   useEffect(() => {
     async function fetchCount() {
@@ -49,7 +66,9 @@ const TodaysProgress = () => {
               resizeMode="contain"
             />
           </View>
-          <Text className="text-2xl font-bold text-green-600">0</Text>
+          <Text className="text-2xl font-bold text-green-600">
+            {journalCount ?? 0}
+          </Text>
           <Text className="text-xs text-gray-500 mt-1">Journal Entries</Text>
         </View>
       </View>

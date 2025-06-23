@@ -4,17 +4,17 @@ import ProfileCard from "@/components/ProfileCard";
 import SearchBar from "@/components/SearchBar";
 import TodaysProgress from "@/components/TodaysProgress";
 import { UserProvider } from "@/context/UserContext";
-import * as Updates from "expo-updates";
 import { useState } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, View } from "react-native";
 import ArticleSection from "../articles/ArticleSection";
 
 export default function Index() {
   const [refreshing, setRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Updates.reloadAsync(); // This will reload the entire app
+    setRefreshKey((k) => k + 1); // Change key to force re-render
     setRefreshing(false);
   };
 
@@ -22,10 +22,10 @@ export default function Index() {
     <UserProvider>
       <View className="flex-1 bg-purple-100">
       {refreshing && (
-            <ActivityIndicator size="large" color="#53389E" />
+          <ActivityIndicator size="large" color="#53389E" />
         )}
         <ScrollView
-          // showsVerticalScrollIndicator={false}
+          key={refreshKey}
           contentContainerStyle={{ paddingBottom: 20 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

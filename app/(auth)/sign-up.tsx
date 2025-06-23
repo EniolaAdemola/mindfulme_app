@@ -1,4 +1,5 @@
 import { images } from "@/constants/images";
+import { Ionicons } from "@expo/vector-icons";
 import Checkbox from 'expo-checkbox';
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -24,6 +25,9 @@ export default function SignUpScreen() {
   const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   const isSignUpDisabled =
   !fullName ||
@@ -117,29 +121,49 @@ export default function SignUpScreen() {
             />
           </View>
           
-          {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Create a password"
-              placeholderTextColor="rgba(12, 17, 29, 0.4)"
-              secureTextEntry={true}
-              value={password}
-              onChangeText={setPassword}
-            />
-          </View>
-          
-          {/* Confirm Password Input */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm your password"
-              placeholderTextColor="rgba(12, 17, 29, 0.4)"
-              secureTextEntry={true}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-          </View>
+  {/* Password Input */}
+  <View style={styles.inputContainer}>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <TextInput
+        style={[styles.input, { flex: 1 }]}
+        placeholder="Create a password"
+        placeholderTextColor="rgba(12, 17, 29, 0.4)"
+        secureTextEntry={!showPassword}
+        value={password}
+        onChangeText={setPassword}
+      />
+      <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
+        <Ionicons
+          name={showPassword ? "eye-off-outline" : "eye-outline"}
+          size={22}
+          color="#667085"
+          style={{ marginLeft: -36, marginRight: 12 }}
+        />
+      </TouchableOpacity>
+    </View>
+  </View>
+
+  {/* Confirm Password Input */}
+  <View style={styles.inputContainer}>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <TextInput
+        style={[styles.input, { flex: 1 }]}
+        placeholder="Confirm your password"
+        placeholderTextColor="rgba(12, 17, 29, 0.4)"
+        secureTextEntry={!showConfirmPassword}
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+      />
+      <TouchableOpacity onPress={() => setShowConfirmPassword((v) => !v)}>
+        <Ionicons
+          name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
+          size={22}
+          color="#667085"
+          style={{ marginLeft: -36, marginRight: 12 }}
+        />
+      </TouchableOpacity>
+    </View>
+  </View>
           
           {/* Terms Agreement */}
           <View style={styles.termsContainer}>

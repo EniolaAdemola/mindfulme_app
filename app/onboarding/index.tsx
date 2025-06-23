@@ -127,7 +127,7 @@ export default function Onboarding() {
           <View
             key={index}
             style={{
-              width: index === activeIndex ? 12 : 7, // Active indicator is wider
+              width: index === activeIndex ? 15 : 7, // Active indicator is wider
               height: 7,
               borderRadius: 5,
               marginHorizontal: 4,
