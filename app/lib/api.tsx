@@ -201,3 +201,58 @@ export async function getUserJournalCount(userId: string) {
   }
   return { count };
 }
+
+export async function getAIDailyQuote(userId: string, displayName: string) {
+  // Get moods for the week
+  const moodsResult = await getUserMoodsForWeek(userId);
+  let moodList = "";
+  if (moodsResult.data && moodsResult.data.length > 0) {
+    moodList = moodsResult.data
+      .map(
+        (m: any) =>
+          `Date: ${new Date(m.created_at).toLocaleDateString()}, Mood: ${
+            m.user_mood
+          }, Note: ${m.note || "None"}`
+      )
+      .join("\n");
+  }
+
+  const prompt =
+    moodsResult.data && moodsResult.data.length > 0
+      ? `
+You are MindfulMe, an AI mental wellness assistant. Here is ${displayName}'s mood log for the past week:
+${moodList}
+
+Based on this, generate a single motivational quote (max 7 words) that is supportive and relevant to their recent moods. Only return the quote text, no extra text.
+`
+      : `
+You are MindfulMe, an AI mental wellness assistant. Generate a single random motivational quote (max 7 words) for mental wellness. Only return the quote text, no extra text.
+`;
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful mental wellness assistant.",
+        },
+        { role: "user", content: prompt },
+      ],
+      max_tokens: 60,
+    }),
+  });
+
+  const data = await response.json();
+  let content = data.choices?.[0]?.message?.content?.trim() || "";
+  // Remove quotes if AI returns them
+  if (content.startsWith('"') && content.endsWith('"')) {
+    content = content.slice(1, -1);
+  }
+  return content;
+}
