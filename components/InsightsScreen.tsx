@@ -148,6 +148,7 @@ export default function InsightsScreen() {
       </View>
       {/* Calendar */}
       <Text style={styles.sectionTitle}>Calendar</Text>
+
       <Calendar
         theme={{
           backgroundColor: "#F9FAFB",
@@ -280,10 +281,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     marginTop: 8,
+    opacity: 0.4,
   },
   streakButtonText: {
     color: "#5F3DC4",
     fontWeight: "600",
+    opacity: 0.8,
   },
   streakMenu: {
     position: "absolute",
