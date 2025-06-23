@@ -20,22 +20,18 @@ export default function ArticleDetail() {
         <Text className="text-2xl font-bold text-gray-900 mb-3">
           {article.title}
         </Text>
-
         <Text className="text-gray-500 text-sm mb-4">
           Published on {article.date}
         </Text>
-
         <Text className="text-base text-gray-700 leading-6">
           {article.content}
         </Text>
-
-        {/* Related Articles Section */}
+        {/* Related Articles Section
         <View className="mt-8 border-t border-gray-100 pt-6">
           <Text className="text-lg font-bold text-gray-900 mb-4">
             More Articles
           </Text>
-          {/* Render related articles here */}
-        </View>
+        </View> */}
       </View>
     </ScrollView>
   );
