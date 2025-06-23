@@ -17,6 +17,7 @@ const ProfileCard = () => {
   const [quote, setQuote] = useState("Loading...");
 
   useEffect(() => {
+    // A mini agent that provdes quotes based on users mood
     async function fetchQuote() {
       if (user) {
         const aiQuote = await getAIDailyQuote(user.id, displayName);
