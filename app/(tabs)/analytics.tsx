@@ -1,21 +1,22 @@
 import Chart from "@/components/Chart";
 import OtherReports from "@/components/OtherReports";
 import WeeklyInsight from "@/components/WeeklyInsight";
-import * as Updates from "expo-updates";
 import React, { useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 
 const analytics = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Updates.reloadAsync(); // This will reload the entire app
+    setRefreshKey((k) => k + 1); // Force re-render of
     setRefreshing(false);
   };
 
   return (
     <ScrollView
+      key={refreshKey}
       className="bg-white flex-1"
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
