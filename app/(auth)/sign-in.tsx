@@ -1,5 +1,6 @@
 import { images } from "@/constants/images";
 import { useUser } from "@/context/UserContext";
+import { Ionicons } from "@expo/vector-icons";
 import Checkbox from 'expo-checkbox';
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -24,6 +25,8 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   async function signInWithEmail() {
     setLoading(true);
@@ -97,14 +100,24 @@ export default function SignIn() {
           
           {/* Password Input */}
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your password"
-              placeholderTextColor="rgba(12, 17, 29, 0.4)"
-              secureTextEntry={true}
-              value={password}
-              onChangeText={setPassword}
-            />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <TextInput
+        style={[styles.input, { flex: 1 }]}
+        placeholder="Enter your password"
+        placeholderTextColor="rgba(12, 17, 29, 0.4)"
+        secureTextEntry={!showPassword}
+        value={password}
+        onChangeText={setPassword}
+      />
+      <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
+        <Ionicons
+          name={showPassword ? "eye-off-outline" : "eye-outline"}
+          size={22}
+          color="#667085"
+          style={{ marginLeft: -36, marginRight: 12 }}
+        />
+      </TouchableOpacity>
+    </View>
           </View>
           
           {/* Remember Me & Forgot Password */}
