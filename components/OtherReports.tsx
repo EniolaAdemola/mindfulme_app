@@ -100,9 +100,9 @@ const OtherReports = () => {
         <View style={styles.valueBox}>
           <Text style={styles.value}>{item.value}</Text>
         </View>
-        {item.id !== 1 && (
+        {/* {item.id !== 1 && (
           <Ionicons name="chevron-forward" size={18} color="#6B7280" />
-        )}
+        )} */}
       </View>
     </TouchableOpacity>
   );
