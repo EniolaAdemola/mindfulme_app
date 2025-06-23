@@ -29,32 +29,33 @@ export function TopicGrid({
     {
       id: 1,
       title: "Anxiety",
-      description: "Feeling worried, nervous, or uneasy?",
+      description: "How can I calm myself during a panic attack?",
       borderColor: "#3B82F6", // blue
       bgColor: "#EFF6FF",
     },
     {
       id: 2,
       title: "Depression",
-      description: "Persistent feeling of sadness & loss of interest?",
+      description: "What are small daily steps to cope with depression?",
       borderColor: "#10B981", // green
       bgColor: "#ECFDF5",
     },
     {
       id: 3,
       title: "Relationship",
-      description: "Feeling worried, nervous, or uneasy?",
+      description: "How do I communicate better with my partner?",
       borderColor: "#F97316", // orange
       bgColor: "#FFF7ED",
     },
     {
       id: 4,
       title: "Worklife Balance",
-      description: "Persistent feeling of sadness & loss of interest?",
+      description: "How can I set boundaries with work after hours?",
       borderColor: "#8B5CF6", // purple
       bgColor: "#F5F3FF",
     },
   ];
+
   const renderItem = ({ item }: any) => (
     <TouchableOpacity
       onPress={() => onTopicPress(`${item.title}: ${item.description}`)}
