@@ -1,6 +1,7 @@
+import { getAIDailyQuote } from "@/app/lib/api";
 import { icons } from "@/constants/icons";
 import { useUser } from "@/context/UserContext";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 function getGreeting() {
@@ -12,28 +13,18 @@ function getGreeting() {
 
 const ProfileCard = () => {
   const { user } = useUser();
-  const displayName = user?.user_metadata?.display_name;
+  const displayName = user?.user_metadata?.display_name || user?.email || "";
+  const [quote, setQuote] = useState("Loading...");
 
-  const motivationalQuotes = {
-    quotes: [
-      "Today is a new opportunity.",
-      "A stress-free life is a healthy life.",
-      "Believe in yourself.",
-      "Embrace the spectrum of your moods.",
-      "Every feeling is a reminder of who you are.",
-      "Your mood is your guide—trust it.",
-      "Let your emotions inspire creativity.",
-      "Balance your mind and soul.",
-      "Stay strong.",
-      "Make it happen.",
-    ],
-  };
-
-  const getDailyMotivationalQuote = () => {
-    const dayIndex = Math.floor(Date.now() / 86400000);
-    const index = dayIndex % motivationalQuotes.quotes.length;
-    return motivationalQuotes.quotes[index];
-  };
+  useEffect(() => {
+    async function fetchQuote() {
+      if (user) {
+        const aiQuote = await getAIDailyQuote(user.id, displayName);
+        setQuote(aiQuote || "Today is a new opportunity.");
+      }
+    }
+    fetchQuote();
+  }, [user]);
 
   return (
     <View
@@ -44,16 +35,9 @@ const ProfileCard = () => {
       <View>
         <Text className="text-white text-xl font-bold">
           {getGreeting()}
-          {displayName
-            ? ` ${
-                displayName.split(" ")[0].charAt(0).toUpperCase() +
-                displayName.split(" ")[0].slice(1).toLowerCase()
-              }`
-            : ""}
+          {displayName ? ` ${displayName.split(" ")[0]}` : ""}
         </Text>
-        <Text className="text-white text-sm opacity-80">
-          {getDailyMotivationalQuote()}
-        </Text>
+        <Text className="text-white text-sm opacity-80">{quote}</Text>
       </View>
 
       {/* Notification Icon */}
