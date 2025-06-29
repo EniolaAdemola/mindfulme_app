@@ -1,7 +1,7 @@
 import { images } from "@/constants/images";
 import { useUser } from "@/context/UserContext";
 import { Ionicons } from "@expo/vector-icons";
-import Checkbox from 'expo-checkbox';
+import Checkbox from "expo-checkbox";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -14,7 +14,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { supabase } from "../lib/superbase";
 
@@ -27,7 +27,6 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-
   async function signInWithEmail() {
     setLoading(true);
     try {
@@ -38,7 +37,9 @@ export default function SignIn() {
       if (error) {
         Alert.alert(error.message);
       } else {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         setUser(user);
         router.replace("/(tabs)"); // or router.replace("/(tabs)") or your home screen
       }
@@ -47,24 +48,23 @@ export default function SignIn() {
     }
   }
 
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Image 
-        source={images.backgroundBlur} 
-        style={styles.background} 
+      <Image
+        source={images.backgroundBlur}
+        style={styles.background}
         resizeMode="cover"
       />
-      <Image 
-        source={images.backgroundBlur} 
-        style={styles.background2} 
+      <Image
+        source={images.backgroundBlur}
+        style={styles.background2}
         resizeMode="cover"
       />
-      
-      <ScrollView 
+
+      <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
@@ -72,19 +72,20 @@ export default function SignIn() {
           {/* Logo */}
           <View style={{ alignItems: "center" }}>
             <Link href="/">
-              <Image 
-                source={images.logo} 
-                style={styles.logo} 
+              <Image
+                source={images.logo}
+                style={styles.logo}
                 resizeMode="contain"
               />
             </Link>
           </View>
-         <Text className="font-bold text-center text-2xl mt-3 mb-10">MindFulMe </Text>
+          <Text className="font-bold text-center text-2xl mt-3 mb-10">
+            MindFulMe{" "}
+          </Text>
 
-          
           <Text style={styles.title}>Login to Account</Text>
           <Text style={styles.subtitle}>Please provide your details</Text>
-          
+
           {/* Email Input */}
           <View style={styles.inputContainer}>
             <TextInput
@@ -97,29 +98,29 @@ export default function SignIn() {
               onChangeText={setEmail}
             />
           </View>
-          
+
           {/* Password Input */}
           <View style={styles.inputContainer}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <TextInput
-        style={[styles.input, { flex: 1 }]}
-        placeholder="Enter your password"
-        placeholderTextColor="rgba(12, 17, 29, 0.4)"
-        secureTextEntry={!showPassword}
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
-        <Ionicons
-          name={showPassword ? "eye-off-outline" : "eye-outline"}
-          size={22}
-          color="#667085"
-          style={{ marginLeft: -36, marginRight: 12 }}
-        />
-      </TouchableOpacity>
-    </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Enter your password"
+                placeholderTextColor="rgba(12, 17, 29, 0.4)"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
+                <Ionicons
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  size={22}
+                  color="#667085"
+                  style={{ marginLeft: -36, marginRight: 12 }}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-          
+
           {/* Remember Me & Forgot Password */}
           <View style={styles.row}>
             <View style={styles.rememberContainer}>
@@ -131,26 +132,28 @@ export default function SignIn() {
               />
               <Text style={styles.rememberText}>Remember me</Text>
             </View>
-            
+
             <TouchableOpacity>
               <Text style={styles.forgotPassword}>Forgot password?</Text>
             </TouchableOpacity>
           </View>
-          
+
           {/* Login Button */}
           <TouchableOpacity
-  style={[
-    styles.loginButton,
-    (!email || !password) ? styles.loginButtonDisabled : styles.loginButtonActive,
-  ]}
-  disabled={!email || !password}
-  onPress={signInWithEmail}
->
+            style={[
+              styles.loginButton,
+              !email || !password
+                ? styles.loginButtonDisabled
+                : styles.loginButtonActive,
+            ]}
+            disabled={!email || !password}
+            onPress={signInWithEmail}
+          >
             <Text style={styles.buttonText}>
               {loading ? "Processing..." : "Login"}
             </Text>
           </TouchableOpacity>
-          
+
           {/* Sign Up Link */}
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>You don't have an account?</Text>
@@ -175,13 +178,13 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     width: "100%",
     height: "80%",
-    marginTop: 400, 
+    marginTop: 400,
   },
   background2: {
     ...StyleSheet.absoluteFillObject,
     width: "100%",
     height: "80%",
-    marginTop: 600, 
+    marginTop: 600,
     transform: [{ rotate: "90deg" }],
     marginLeft: -200,
   },
