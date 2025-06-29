@@ -1,7 +1,7 @@
 import { images } from "@/constants/images";
 import { Ionicons } from "@expo/vector-icons";
-import Checkbox from 'expo-checkbox';
-import { Link, useRouter } from "expo-router";
+import Checkbox from "expo-checkbox";
+import { Link } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -13,12 +13,11 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { supabase } from "../lib/superbase";
 
 export default function SignUpScreen() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,72 +27,72 @@ export default function SignUpScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
   const isSignUpDisabled =
-  !fullName ||
-  !email ||
-  !password ||
-  !confirmPassword ||
-  password !== confirmPassword;
+    !fullName ||
+    !email ||
+    !password ||
+    !confirmPassword ||
+    password !== confirmPassword;
 
-    async function signUpWithEmail() {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              display_name: fullName, // or any custom field
-            },
+  async function signUpWithEmail() {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            display_name: fullName, // or any custom field
           },
-        });
-        if (error) {
-          Alert.alert(error.message);
-        } else if (!data.session) {
-          Alert.alert("Please check your inbox for email verification!");
-        }
-      } finally {
-        setLoading(false);
+        },
+      });
+      if (error) {
+        Alert.alert(error.message);
+      } else if (!data.session) {
+        Alert.alert("Please check your inbox for email verification!");
       }
+    } finally {
+      setLoading(false);
     }
+  }
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Image 
-         source={images.backgroundBlur} 
-         style={styles.background} 
-         resizeMode="cover"
-       />
-       <Image 
-         source={images.backgroundBlur} 
-         style={styles.background2} 
-         resizeMode="cover"
-       />
-      
-      <ScrollView 
+      <Image
+        source={images.backgroundBlur}
+        style={styles.background}
+        resizeMode="cover"
+      />
+      <Image
+        source={images.backgroundBlur}
+        style={styles.background2}
+        resizeMode="cover"
+      />
+
+      <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.content} >
-           <View style={{ alignItems: "center" }}>
-          
-           <Link href="/">
-              <Image 
-                source={images.logo} 
-                style={styles.logo} 
+        <View style={styles.content}>
+          <View style={{ alignItems: "center" }}>
+            <Link href="/">
+              <Image
+                source={images.logo}
+                style={styles.logo}
                 resizeMode="contain"
               />
             </Link>
-            </View>
-           <Text className="font-bold text-center text-2xl mt-3 mb-10">MindFulMe</Text>
-            
+          </View>
+          <Text className="font-bold text-center text-2xl mt-3 mb-10">
+            MindFulMe
+          </Text>
+
           <Text style={styles.title}>Create an Account</Text>
           <Text style={styles.subtitle}>Please provide your details</Text>
-          
+
           {/* Name Fields */}
           <View style={styles.nameContainer}>
             <View style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}>
@@ -107,7 +106,7 @@ export default function SignUpScreen() {
               />
             </View>
           </View>
-          
+
           {/* Email Input */}
           <View style={styles.inputContainer}>
             <TextInput
@@ -120,51 +119,53 @@ export default function SignUpScreen() {
               onChangeText={setEmail}
             />
           </View>
-          
-  {/* Password Input */}
-  <View style={styles.inputContainer}>
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <TextInput
-        style={[styles.input, { flex: 1 }]}
-        placeholder="Create a password"
-        placeholderTextColor="rgba(12, 17, 29, 0.4)"
-        secureTextEntry={!showPassword}
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
-        <Ionicons
-          name={showPassword ? "eye-off-outline" : "eye-outline"}
-          size={22}
-          color="#667085"
-          style={{ marginLeft: -36, marginRight: 12 }}
-        />
-      </TouchableOpacity>
-    </View>
-  </View>
 
-  {/* Confirm Password Input */}
-  <View style={styles.inputContainer}>
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <TextInput
-        style={[styles.input, { flex: 1 }]}
-        placeholder="Confirm your password"
-        placeholderTextColor="rgba(12, 17, 29, 0.4)"
-        secureTextEntry={!showConfirmPassword}
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-      <TouchableOpacity onPress={() => setShowConfirmPassword((v) => !v)}>
-        <Ionicons
-          name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
-          size={22}
-          color="#667085"
-          style={{ marginLeft: -36, marginRight: 12 }}
-        />
-      </TouchableOpacity>
-    </View>
-  </View>
-          
+          {/* Password Input */}
+          <View style={styles.inputContainer}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Create a password"
+                placeholderTextColor="rgba(12, 17, 29, 0.4)"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
+                <Ionicons
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  size={22}
+                  color="#667085"
+                  style={{ marginLeft: -36, marginRight: 12 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Confirm Password Input */}
+          <View style={styles.inputContainer}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Confirm your password"
+                placeholderTextColor="rgba(12, 17, 29, 0.4)"
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword((v) => !v)}
+              >
+                <Ionicons
+                  name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
+                  size={22}
+                  color="#667085"
+                  style={{ marginLeft: -36, marginRight: 12 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {/* Terms Agreement */}
           <View style={styles.termsContainer}>
             <Checkbox
@@ -177,9 +178,9 @@ export default function SignUpScreen() {
               I agree to the Terms of Service and Privacy Policy
             </Text>
           </View>
-          
+
           {/* Sign Up Button */}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={signUpWithEmail}
             style={[
               styles.signUpButton,
@@ -191,7 +192,7 @@ export default function SignUpScreen() {
               {loading ? "Creating Account..." : "Sign up"}
             </Text>
           </TouchableOpacity>
-          
+
           {/* Sign In Link */}
           <View style={styles.signinContainer}>
             <Text style={styles.signinText}>Already have an account?</Text>
@@ -216,13 +217,13 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     width: "100%",
     height: "80%",
-    marginTop: 400, 
+    marginTop: 400,
   },
   background2: {
     ...StyleSheet.absoluteFillObject,
     width: "100%",
     height: "80%",
-    marginTop: 600, 
+    marginTop: 600,
     transform: [{ rotate: "90deg" }],
     marginLeft: -200,
   },
